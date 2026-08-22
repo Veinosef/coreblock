@@ -1,5 +1,6 @@
 {
   "block.coreblock.core_block": "Çekirdek Blok",
+  "menu.coreblock.play": "CoreBlock Oyna",
   "message.coreblock.current_phase": "§6[CoreBlock] §eMevcut Evre: §a%s",
   "phase.coreblock.1": "1. Ahşap ve Doğa Çağı",
   "phase.coreblock.2": "2. Yeraltı Maden Çağı",
