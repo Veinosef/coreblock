@@ -23,6 +23,8 @@ public class CoreBlockMod implements ModInitializer {
         Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "core_block"), CORE_BLOCK);
         Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "core_block"), new BlockItem(CORE_BLOCK, new Item.Settings()));
 
+        CoreBlockWorldHandler.register();
+
         LOGGER.info("CoreBlock 1.21 Basariyla Yuklendi!");
     }
 }
