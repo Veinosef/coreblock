@@ -1,5 +1,6 @@
 {
   "block.coreblock.core_block": "Core Block",
+  "menu.coreblock.play": "Play CoreBlock",
   "message.coreblock.current_phase": "§6[CoreBlock] §eCurrent Phase: §a%s",
   "phase.coreblock.1": "1. Wood & Nature Age",
   "phase.coreblock.2": "2. Underground Mining Age",
