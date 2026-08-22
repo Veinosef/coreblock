@@ -33,7 +33,6 @@ public class CoreBlockMod implements ModInitializer {
             updateGlobalScoreboard(handler.getPlayer());
         });
 
-        // Blok kırıldıktan sonra yeni bloğu koy ve görevi ilerlet
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (!world.isClient() && pos.equals(new BlockPos(0, 64, 0))) {
                 if (player instanceof ServerPlayerEntity serverPlayer) {
