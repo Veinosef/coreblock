@@ -3,11 +3,8 @@ package net.veinosef.coreblock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
@@ -18,7 +15,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.List;
 import java.util.Random;
 
 public class CoreBlockMod implements ModInitializer {
@@ -37,18 +33,16 @@ public class CoreBlockMod implements ModInitializer {
             updateGlobalScoreboard(handler.getPlayer());
         });
 
-        PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+        // Blok kırıldıktan sonra yeni bloğu koy ve görevi ilerlet
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (!world.isClient() && pos.equals(new BlockPos(0, 64, 0))) {
                 if (player instanceof ServerPlayerEntity serverPlayer) {
-                    dropItemGentlyOnTop(world, serverPlayer, state, pos);
                     handleQuestProgress(world, serverPlayer, state, pos);
                 }
 
                 BlockState nextBlock = getNextBlockState(currentPhase);
                 world.setBlockState(pos, nextBlock);
-                return false;
             }
-            return true;
         });
     }
 
@@ -101,7 +95,7 @@ public class CoreBlockMod implements ModInitializer {
             } else if (currentQuest == 2 && brokenState.isOf(Blocks.OBSIDIAN)) {
                 questProgress++;
                 progressMade = true;
-                if (questProgress >= 14) advancePhase(world, player, pos, 5, "CoreBlock Nihai Çekirdeğe Dönüştü!");
+                if (questProgress >= 14) advancePhase(world, player, pos, 5, "CoreBlock Nihai Çekirdeğe Ulaştı!");
             }
         } else {
             questProgress++;
@@ -217,18 +211,6 @@ public class CoreBlockMod implements ModInitializer {
         if (player.getServer() != null) {
             for (ServerPlayerEntity p : player.getServer().getPlayerManager().getPlayerList()) {
                 p.sendMessage(Text.literal(message), false);
-            }
-        }
-    }
-
-    private static void dropItemGentlyOnTop(net.minecraft.world.World world, ServerPlayerEntity player, BlockState state, BlockPos pos) {
-        if (world instanceof net.minecraft.server.world.ServerWorld serverWorld) {
-            List<ItemStack> droppedStacks = Block.getDroppedStacks(state, serverWorld, pos, null, player, player.getMainHandStack());
-            for (ItemStack stack : droppedStacks) {
-                ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.05, pos.getZ() + 0.5, stack);
-                itemEntity.setVelocity(0.0, 0.0, 0.0);
-                itemEntity.setToDefaultPickupDelay();
-                world.spawnEntity(itemEntity);
             }
         }
     }
