@@ -1,0 +1,9 @@
+{
+  "block.coreblock.core_block": "Core Block",
+  "message.coreblock.current_phase": "§6[CoreBlock] §eCurrent Phase: §a%s",
+  "phase.coreblock.1": "1. Wood & Nature Age",
+  "phase.coreblock.2": "2. Underground Mining Age",
+  "phase.coreblock.3": "3. Nether Age",
+  "phase.coreblock.4": "4. End Age",
+  "phase.coreblock.5": "5. Cosmic Infinity Mode"
+}
