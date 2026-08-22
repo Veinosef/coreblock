@@ -37,7 +37,7 @@ public class CoreBlockWorldHandler {
     }
 
     public static void spawnHologram(ServerWorld world, BlockPos pos) {
-        // Eski hologram varsa temizle
+        // Varsa eski TextDisplay'leri temizle
         List<DisplayEntity.TextDisplayEntity> existing = world.getEntitiesByClass(
                 DisplayEntity.TextDisplayEntity.class,
                 new Box(pos.up()).expand(1.0),
@@ -49,10 +49,9 @@ public class CoreBlockWorldHandler {
 
         DisplayEntity.TextDisplayEntity display = EntityType.TEXT_DISPLAY.create(world);
         if (display != null) {
-            display.setPosition(pos.getX() + 0.5, pos.getY() + 1.6, pos.getZ() + 0.5);
-            display.setText(Text.literal("§6§lCORE BLOCK\n§eEvre 1: Ahşap & Doğa Çağı"));
-            display.setBillboardMode(DisplayEntity.BillboardMode.CENTER);
-            display.setViewRange(0.6F);
+            display.setPosition(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+            display.setCustomName(Text.literal("§6§lCORE BLOCK\n§eEvre 1: Ahşap & Doğa Çağı"));
+            display.setCustomNameVisible(true);
             world.spawnEntity(display);
         }
     }
