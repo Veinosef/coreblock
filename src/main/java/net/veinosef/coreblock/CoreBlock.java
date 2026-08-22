@@ -19,8 +19,6 @@ import java.util.Random;
 
 public class CoreBlock extends Block {
     private static final Random RANDOM = new Random();
-    
-    // Evreler: 1 = Agac/Doga, 2 = Tas/Maden, 3 = Nether, 4 = End, 5 = Sonsuz Mod
     public static int currentPhase = 1;
 
     public CoreBlock(Settings settings) {
@@ -28,7 +26,7 @@ public class CoreBlock extends Block {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient()) {
             player.sendMessage(Text.literal("§6[CoreBlock] §eMevcut Evre: §a" + getPhaseName(currentPhase)), true);
         }
@@ -43,7 +41,7 @@ public class CoreBlock extends Block {
             world.spawnEntity(itemEntity);
             world.playSound(null, pos, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
-        return state;
+        return super.onBreak(world, pos, state, player);
     }
 
     private static ItemStack getRandomDrop(int phase) {
@@ -62,7 +60,7 @@ public class CoreBlock extends Block {
                 if (chance < 85) yield new ItemStack(Items.RAW_IRON);
                 if (chance < 95) yield new ItemStack(Items.RAW_COPPER);
                 if (chance < 98) yield new ItemStack(Items.RAW_GOLD);
-                yield new ItemStack(Items.DIAMOND); // %2 Sansla Elmas
+                yield new ItemStack(Items.DIAMOND);
             }
             case 3 -> {
                 if (chance < 45) yield new ItemStack(Items.NETHERRACK);
@@ -71,7 +69,7 @@ public class CoreBlock extends Block {
                 if (chance < 90) yield new ItemStack(Items.GLOWSTONE_DUST);
                 if (chance < 96) yield new ItemStack(Items.BLAZE_ROD);
                 if (chance < 99) yield new ItemStack(Items.DIAMOND);
-                yield new ItemStack(Items.ANCIENT_DEBRIS); // %1 Sansla Netherit Hurda
+                yield new ItemStack(Items.ANCIENT_DEBRIS);
             }
             case 4 -> {
                 if (chance < 50) yield new ItemStack(Items.END_STONE);
