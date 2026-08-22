@@ -1,6 +1,7 @@
 package net.veinosef.coreblock;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -14,27 +15,55 @@ import java.io.File;
 import java.nio.file.Path;
 
 public class CoreBlockWorldHandler {
+    private static boolean islandCreated = false;
+
     public static void register() {
+        // Dünya yüklendiğinde adayı hazırla
         ServerWorldEvents.LOAD.register((server, world) -> {
             if (world.getRegistryKey() == ServerWorld.OVERWORLD) {
-                BlockPos corePos = new BlockPos(0, 64, 0);
-
-                if (world.isAir(corePos)) {
-                    // Düşmeyi kesin engelleyen taban Bedrock
-                    world.setBlockState(new BlockPos(0, 63, 0), Blocks.BEDROCK.getDefaultState());
-
-                    for (int x = -1; x <= 1; x++) {
-                        for (int z = -1; z <= 1; z++) {
-                            BlockPos pos = new BlockPos(x, 64, z);
-                            world.setBlockState(pos, Blocks.DIRT.getDefaultState());
-                        }
-                    }
-                    world.setSpawnPos(new BlockPos(0, 65, 0), 0.0f);
-                }
-
+                setupCoreIsland(world);
                 generateWorldIcon(server);
             }
         });
+
+        // Oyuncu oyuna girdiğinde adaya ışınla
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerWorld world = server.getOverworld();
+            setupCoreIsland(world);
+            handler.getPlayer().teleport(world, 0.5, 65.0, 0.5, 0.0f, 0.0f);
+        });
+    }
+
+    private static void setupCoreIsland(ServerWorld world) {
+        if (islandCreated && !world.isAir(new BlockPos(0, 64, 0))) {
+            return;
+        }
+
+        // Çevredeki 32x32 alanı havaya çevirip temizle
+        for (int x = -16; x <= 16; x++) {
+            for (int z = -16; z <= 16; z++) {
+                for (int y = 50; y <= 90; y++) {
+                    BlockPos p = new BlockPos(x, y, z);
+                    if (!world.isAir(p)) {
+                        world.setBlockState(p, Blocks.AIR.getDefaultState());
+                    }
+                }
+            }
+        }
+
+        // Düşmeyi engelleyen taban Bedrock
+        world.setBlockState(new BlockPos(0, 63, 0), Blocks.BEDROCK.getDefaultState());
+
+        // 3x3 Başlangıç Toprak Platformu
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                world.setBlockState(new BlockPos(x, 64, z), Blocks.DIRT.getDefaultState());
+            }
+        }
+
+        // Doğuş noktasını ayarla
+        world.setSpawnPos(new BlockPos(0, 65, 0), 0.0f);
+        islandCreated = true;
     }
 
     private static void generateWorldIcon(MinecraftServer server) {
