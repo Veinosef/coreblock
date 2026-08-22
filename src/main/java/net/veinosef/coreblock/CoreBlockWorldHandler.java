@@ -1,6 +1,5 @@
 package net.veinosef.coreblock;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.Blocks;
@@ -8,7 +7,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,50 +17,31 @@ import java.nio.file.Path;
 public class CoreBlockWorldHandler {
 
     public static void register() {
-        // Dünyadaki tüm arazi üretimini anında silip %100 saf boşluk yapar
-        ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            if (world.getRegistryKey() == ServerWorld.OVERWORLD && chunk instanceof WorldChunk worldChunk) {
-                int cx = chunk.getPos().x;
-                int cz = chunk.getPos().z;
-
-                // Sadece merkez platformun olduğu yer haricindeki tüm blokları havaya çevir
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        int wx = (cx << 4) + x;
-                        int wz = (cz << 4) + z;
-
-                        for (int y = world.getBottomY(); y < 120; y++) {
-                            if (wx >= -1 && wx <= 1 && wz >= -1 && wz <= 1) {
-                                if (y == 63 || y == 64) continue; // 3x3 ada ve alt bedrock kalır
-                            }
-                            BlockPos p = new BlockPos(wx, y, wz);
-                            if (!chunk.getBlockState(p).isAir()) {
-                                chunk.setBlockState(p, Blocks.AIR.getDefaultState(), false);
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Dünya açıldığında platformu hazırla
+        // Dünya ilk defa açıldığında sadece 1 kez çalışır
         ServerWorldEvents.LOAD.register((server, world) -> {
             if (world.getRegistryKey() == ServerWorld.OVERWORLD) {
-                setupCoreIsland(world);
+                BlockPos bedrockPos = new BlockPos(0, 63, 0);
+                
+                // Eğer zemin kurulmamışsa adayı kur
+                if (world.getBlockState(bedrockPos).isAir()) {
+                    setupFirstTimeIsland(world);
+                }
                 generateWorldIcon(server);
             }
         });
 
-        // Oyuncu girdiğinde platforma ışınla
+        // Oyuncu oyuna ilk bağlandığında merkez bloğun üstüne ışınla
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerWorld world = server.getOverworld();
-            setupCoreIsland(world);
-            handler.getPlayer().teleport(world, 0.5, 65.0, 0.5, 0.0f, 0.0f);
+            BlockPos corePos = new BlockPos(0, 64, 0);
+            if (world.getBlockState(corePos).isAir()) {
+                world.setBlockState(corePos, Blocks.DIRT.getDefaultState());
+            }
         });
     }
 
-    public static void setupCoreIsland(ServerWorld world) {
-        // Çimento ve kumun düşmesini engelleyen alt Bedrock
+    private static void setupFirstTimeIsland(ServerWorld world) {
+        // Çimento/kumun düşmesini engelleyen taban Bedrock
         world.setBlockState(new BlockPos(0, 63, 0), Blocks.BEDROCK.getDefaultState());
 
         // 3x3 Başlangıç Platformu
