@@ -58,11 +58,11 @@ public class CoreBlockMod implements ModInitializer {
             if (currentQuest == 1 && (brokenState.isOf(Blocks.STONE) || brokenState.isOf(Blocks.DEEPSLATE))) {
                 questProgress++;
                 progressMade = true;
-                if (questProgress >= 60) completeQuest(world, player, pos, "60 Taş/Derinkayrak Kırıldı!", 2);
+                if (questProgress >= 60) completeQuest(world, player, pos, "60 Taş Kırıldı!", 2);
             } else if (currentQuest == 2 && brokenState.isOf(Blocks.IRON_ORE)) {
                 questProgress++;
                 progressMade = true;
-                if (questProgress >= 15) completeQuest(world, player, pos, "15 Demir Cevheri Bulundu!", 3);
+                if (questProgress >= 15) completeQuest(world, player, pos, "15 Demir Bulundu!", 3);
             } else if (currentQuest == 3 && brokenState.isOf(Blocks.DIAMOND_ORE)) {
                 questProgress++;
                 progressMade = true;
@@ -90,7 +90,7 @@ public class CoreBlockMod implements ModInitializer {
             } else if (currentQuest == 2 && brokenState.isOf(Blocks.OBSIDIAN)) {
                 questProgress++;
                 progressMade = true;
-                if (questProgress >= 14) advancePhase(world, player, pos, 5, "Çekirdek Nihai Formuna Ulaştı!");
+                if (questProgress >= 14) advancePhase(world, player, pos, 5, "CoreBlock Nihai Çekirdeğe Dönüştü!");
             }
         } else {
             questProgress++;
@@ -99,7 +99,7 @@ public class CoreBlockMod implements ModInitializer {
                 broadcastMessage(player, "§d§l[KOZMİK DÖNGÜ] §e100 blok tamamlandı!");
                 world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
-            broadcastActionBar(player, "§dKozmik Döngü §7(§b" + questProgress + "§7/§a100§7)");
+            broadcastActionBar(player, "§dKozmik Sonsuzluk §7(§b" + questProgress + "§7/§a100§7)");
             return;
         }
 
@@ -111,7 +111,7 @@ public class CoreBlockMod implements ModInitializer {
     private static void completeQuest(net.minecraft.world.World world, ServerPlayerEntity player, BlockPos pos, String msg, int nextQuest) {
         currentQuest = nextQuest;
         questProgress = 0;
-        broadcastMessage(player, "§a§l[GÖREV TAMAM!] §e" + msg);
+        broadcastMessage(player, "§a§l[GÖREV TAMAM] §e" + msg);
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
         broadcastCurrentQuest(player);
     }
@@ -120,25 +120,25 @@ public class CoreBlockMod implements ModInitializer {
         currentPhase = nextPhase;
         currentQuest = 1;
         questProgress = 0;
-        broadcastMessage(player, "§6§l[ÇAĞ ATLADIN!] §e" + msg);
+        broadcastMessage(player, "§6§l[YENİ ÇAĞ] §e" + msg);
         world.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
         broadcastCurrentQuest(player);
     }
 
     private static void broadcastCurrentQuest(ServerPlayerEntity player) {
         String desc = switch (currentPhase) {
-            case 1 -> (currentQuest == 1) ? "40 Toprak/Çimen Kır (" + questProgress + "/40)" : "25 Odun Kır (" + questProgress + "/25)";
+            case 1 -> (currentQuest == 1) ? "40 Toprak Kır (" + questProgress + "/40)" : "25 Odun Kır (" + questProgress + "/25)";
             case 2 -> switch (currentQuest) {
-                case 1 -> "60 Taş/Derinkayrak Kır (" + questProgress + "/60)";
-                case 2 -> "15 Demir Cevheri Bul (" + questProgress + "/15)";
-                default -> "3 Elmas Cevheri Bul (" + questProgress + "/3)";
+                case 1 -> "60 Taş Kır (" + questProgress + "/60)";
+                case 2 -> "15 Demir Bul (" + questProgress + "/15)";
+                default -> "3 Elmas Bul (" + questProgress + "/3)";
             };
             case 3 -> switch (currentQuest) {
                 case 1 -> "80 Nether Taşı Kır (" + questProgress + "/80)";
                 case 2 -> "20 Kuvars Bul (" + questProgress + "/20)";
                 default -> "1 Antik Kalıntı Bul (" + questProgress + "/1)";
             };
-            case 4 -> (currentQuest == 1) ? "100 End Taşı Kır (" + questProgress + "/100)" : "14 Obsidyen Çıkar (" + questProgress + "/14)";
+            case 4 -> (currentQuest == 1) ? "100 End Taşı Kır (" + questProgress + "/100)" : "14 Obsidyen Kır (" + questProgress + "/14)";
             default -> "Kozmik Döngü (" + questProgress + "/100)";
         };
 
