@@ -20,6 +20,7 @@ public class CoreBlockWorldHandler {
                 BlockPos corePos = new BlockPos(0, 64, 0);
 
                 if (world.isAir(corePos)) {
+                    // Düşmeyi kesin engelleyen taban Bedrock
                     world.setBlockState(new BlockPos(0, 63, 0), Blocks.BEDROCK.getDefaultState());
 
                     for (int x = -1; x <= 1; x++) {
