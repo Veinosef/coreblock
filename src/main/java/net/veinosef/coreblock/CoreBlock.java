@@ -10,7 +10,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,7 +27,7 @@ public class CoreBlock extends Block {
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient()) {
-            player.sendMessage(Text.literal("§6[CoreBlock] §eMevcut Evre: §a" + getPhaseName(currentPhase)), true);
+            player.sendMessage(Text.translatable("message.coreblock.current_phase", Text.translatable("phase.coreblock." + currentPhase)), true);
         }
         return ActionResult.SUCCESS;
     }
@@ -84,16 +83,6 @@ public class CoreBlock extends Block {
                 if (chance < 60) yield new ItemStack(Items.EMERALD_BLOCK);
                 yield new ItemStack(Items.EXPERIENCE_BOTTLE, 4);
             }
-        };
-    }
-
-    private static String getPhaseName(int phase) {
-        return switch (phase) {
-            case 1 -> "1. Ahsap ve Doga Cagi";
-            case 2 -> "2. Yeralti Maden Cagi";
-            case 3 -> "3. Cehennem (Nether) Cagi";
-            case 4 -> "4. Sonsuzluk (End) Cagi";
-            default -> "5. Kozmik Sonsuzluk Modu";
         };
     }
 }
