@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "coreblock",
+  "version": "1.0.0",
+  "name": "CoreBlock",
+  "description": "Evreler ve Gorevlerle Gelisen Ozel Tek Blok Deneyimi!",
+  "authors": [
+    "Veinosef"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.veinosef.coreblock.CoreBlockMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.2",
+    "minecraft": "~1.21",
+    "java": ">=21"
+  }
+}
